@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/users', 'UserController@getUsers')->name('getUsers');
+Route::get('/user/{name}', 'UserController@getUserByName')->name('getUserByName');
+Route::post('/user', 'UserController@createUser')->name('createUser');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
