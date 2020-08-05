@@ -51177,7 +51177,7 @@ var render = function() {
       _vm._v("Votre score : " + _vm._s(_vm.score))
     ]),
     _vm._v(" "),
-    _vm.lastScore !== null
+    _vm.lastScore !== null && _vm.lastScore !== undefined
       ? _c("p", { staticClass: "ml-3 mt-2" }, [
           _vm._v("Votre meilleur score : " + _vm._s(_vm.lastScore))
         ])

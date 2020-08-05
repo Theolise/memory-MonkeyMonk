@@ -58,7 +58,7 @@
 <template>
 <div>
     <p class="ml-3">Votre score : {{ score }}</p>
-    <p class="ml-3 mt-2" v-if="lastScore !== null">Votre meilleur score : {{ lastScore }}</p>
+    <p class="ml-3 mt-2" v-if="lastScore !== null && lastScore !== undefined">Votre meilleur score : {{ lastScore }}</p>
 
     <div class="board">
         <section class="memory-game">
