@@ -13,12 +13,14 @@
     <register-component
       v-if="!user.username && !user.id && !endGame"
       v-bind:username="user.username"
+      v-bind:message="messageRegisterMandatory"
       @register="register"
     >
     </register-component>
 
     <board-game-component
       v-if="user.username && user.id && !endGame"
+      v-bind:lastScore="user.lastScore"
       @updateScore="updateScore"
     >
     </board-game-component>
@@ -26,6 +28,7 @@
     <user-ranking-component
       v-if="endGame"
       v-bind:users="users"
+      v-bind:message="message"
       @replay="replay"
     >
     </user-ranking-component>
@@ -48,7 +51,9 @@
           lastScore: null
         },
         users: [],
-        endGame: false
+        endGame: false,
+        messageRegisterMandatory: '',
+        message: ''
     }
 }
 
@@ -65,10 +70,18 @@
         Object.assign(this.$data, getDefaultData());
       },
       async register(username) {
+        var vm = this;
+
+        vm.messageRegisterMandatory = '';
+
+        if(!username) {
+          vm.messageRegisterMandatory = "Vous devez rentrer un nom d'utilisateur pour pouvoir jouer";
+
+          return;
+        }
+
         var bodyFormData = new FormData();
         bodyFormData.set('username', username);
-
-        var vm = this;
 
         axios({
           method: 'post',
@@ -101,8 +114,10 @@
           if(response.data.score !== null) {
             vm.user.lastScore = response.data.score;
           }
+
+          vm.message = "Bravo vous avez battu votre meilleur score !!";
         } else {
-          
+          vm.message = "C'est gagné, mais vous n'avez pas battu votre meilleur score.";
         }
 
         vm.showUserRanking();

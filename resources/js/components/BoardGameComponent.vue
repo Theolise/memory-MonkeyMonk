@@ -56,8 +56,11 @@
 </style>
 
 <template>
+<div>
+    <p class="ml-3">Votre score : {{ score }}</p>
+    <p class="ml-3 mt-2" v-if="lastScore !== null">Votre meilleur score : {{ lastScore }}</p>
+
     <div class="board">
-        <p>{{ score }}</p>
         <section class="memory-game">
             <div
                 v-for="card in cards"
@@ -71,6 +74,7 @@
             </div>
         </section>
     </div>
+</div>
 </template>
 
 <script>
@@ -202,6 +206,6 @@
                 }
             }
         },
-        props: ['']
+        props: ['lastScore']
     };
 </script>

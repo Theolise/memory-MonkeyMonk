@@ -1,8 +1,11 @@
 <template>
     <div class="container">
+        <b-alert show>{{ message }}</b-alert>
         <b-table striped bordered :items="users"></b-table>
 
-        <b-button @click="replay()">Rejouer</b-button>
+        <div class="text-center">
+            <b-button @click="replay()">Rejouer</b-button>
+        </div>
     </div>
 </template>
 
@@ -16,6 +19,6 @@
                 this.$emit('replay');
             }
         },
-        props: ['users']
+        props: ['users', 'message']
     };
 </script>

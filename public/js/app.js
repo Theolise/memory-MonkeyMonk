@@ -1965,6 +1965,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 function User(_ref) {
   var id = _ref.id,
       username = _ref.username,
@@ -1983,7 +1986,9 @@ function getDefaultData() {
       lastScore: null
     },
     users: [],
-    endGame: false
+    endGame: false,
+    messageRegisterMandatory: '',
+    message: ''
   };
 }
 
@@ -2002,14 +2007,25 @@ function getDefaultData() {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var bodyFormData, vm;
+        var vm, bodyFormData;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                vm = _this;
+                vm.messageRegisterMandatory = '';
+
+                if (username) {
+                  _context.next = 5;
+                  break;
+                }
+
+                vm.messageRegisterMandatory = "Vous devez rentrer un nom d'utilisateur pour pouvoir jouer";
+                return _context.abrupt("return");
+
+              case 5:
                 bodyFormData = new FormData();
                 bodyFormData.set('username', username);
-                vm = _this;
                 axios({
                   method: 'post',
                   url: '/api/user',
@@ -2029,7 +2045,7 @@ function getDefaultData() {
                   console.log(response);
                 });
 
-              case 4:
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -2049,7 +2065,7 @@ function getDefaultData() {
                 vm = _this2;
 
                 if (!(vm.user.lastScore === null || vm.user.lastScore > score)) {
-                  _context2.next = 11;
+                  _context2.next = 12;
                   break;
                 }
 
@@ -2068,13 +2084,17 @@ function getDefaultData() {
                   vm.user.lastScore = response.data.score;
                 }
 
-                _context2.next = 11;
+                vm.message = "Bravo vous avez battu votre meilleur score !!";
+                _context2.next = 13;
                 break;
 
-              case 11:
+              case 12:
+                vm.message = "C'est gagné, mais vous n'avez pas battu votre meilleur score.";
+
+              case 13:
                 vm.showUserRanking();
 
-              case 12:
+              case 14:
               case "end":
                 return _context2.stop();
             }
@@ -2130,6 +2150,10 @@ function getDefaultData() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -2407,7 +2431,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     }
   },
-  props: ['']
+  props: ['lastScore']
 });
 
 /***/ }),
@@ -2442,6 +2466,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2453,7 +2479,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('register', usernameInput);
     }
   },
-  props: ['username']
+  props: ['username', 'message']
 });
 
 /***/ }),
@@ -2475,6 +2501,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {};
@@ -2484,7 +2513,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('replay');
     }
   },
-  props: ['users']
+  props: ['users', 'message']
 });
 
 /***/ }),
@@ -51089,18 +51118,24 @@ var render = function() {
       _vm._v(" "),
       !_vm.user.username && !_vm.user.id && !_vm.endGame
         ? _c("register-component", {
-            attrs: { username: _vm.user.username },
+            attrs: {
+              username: _vm.user.username,
+              message: _vm.messageRegisterMandatory
+            },
             on: { register: _vm.register }
           })
         : _vm._e(),
       _vm._v(" "),
       _vm.user.username && _vm.user.id && !_vm.endGame
-        ? _c("board-game-component", { on: { updateScore: _vm.updateScore } })
+        ? _c("board-game-component", {
+            attrs: { lastScore: _vm.user.lastScore },
+            on: { updateScore: _vm.updateScore }
+          })
         : _vm._e(),
       _vm._v(" "),
       _vm.endGame
         ? _c("user-ranking-component", {
-            attrs: { users: _vm.users },
+            attrs: { users: _vm.users, message: _vm.message },
             on: { replay: _vm.replay }
           })
         : _vm._e()
@@ -51137,43 +51172,53 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "board" }, [
-    _c("p", [_vm._v(_vm._s(_vm.score))]),
+  return _c("div", [
+    _c("p", { staticClass: "ml-3" }, [
+      _vm._v("Votre score : " + _vm._s(_vm.score))
+    ]),
     _vm._v(" "),
-    _c(
-      "section",
-      { staticClass: "memory-game" },
-      _vm._l(_vm.cards, function(card) {
-        return _c(
-          "div",
-          {
-            key: card.key,
-            class: _vm.getClassMemoryCard(card),
-            attrs: { "data-framework": card.name },
-            on: {
-              click: function($event) {
-                return _vm.flipCard(card)
+    _vm.lastScore !== null
+      ? _c("p", { staticClass: "ml-3 mt-2" }, [
+          _vm._v("Votre meilleur score : " + _vm._s(_vm.lastScore))
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "board" }, [
+      _c(
+        "section",
+        { staticClass: "memory-game" },
+        _vm._l(_vm.cards, function(card) {
+          return _c(
+            "div",
+            {
+              key: card.key,
+              class: _vm.getClassMemoryCard(card),
+              attrs: { "data-framework": card.name },
+              on: {
+                click: function($event) {
+                  return _vm.flipCard(card)
+                }
               }
-            }
-          },
-          [
-            _c("img", {
-              staticClass: "front-face",
-              attrs: { src: _vm.getImageUrl(card.path), alt: card.name }
-            }),
-            _vm._v(" "),
-            _c("img", {
-              staticClass: "back-face",
-              attrs: {
-                src: __webpack_require__(/*! ../../../public/images/Logo-Monkey-Monk.png */ "./public/images/Logo-Monkey-Monk.png"),
-                alt: "logoMM"
-              }
-            })
-          ]
-        )
-      }),
-      0
-    )
+            },
+            [
+              _c("img", {
+                staticClass: "front-face",
+                attrs: { src: _vm.getImageUrl(card.path), alt: card.name }
+              }),
+              _vm._v(" "),
+              _c("img", {
+                staticClass: "back-face",
+                attrs: {
+                  src: __webpack_require__(/*! ../../../public/images/Logo-Monkey-Monk.png */ "./public/images/Logo-Monkey-Monk.png"),
+                  alt: "logoMM"
+                }
+              })
+            ]
+          )
+        }),
+        0
+      )
+    ])
   ])
 }
 var staticRenderFns = []
@@ -51202,13 +51247,19 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
+      _vm.message !== ""
+        ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
+            _vm._v(_vm._s(_vm.message))
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c(
         "b-card",
         {
           staticClass: "mb-2",
           attrs: {
             title:
-              "Veuillez renseigner votre nom de joueur avant de pouvoir jouer",
+              "Veuillez renseigner votre nom de joueur avant de pouvoir jouer.",
             tag: "username"
           }
         },
@@ -51278,18 +51329,27 @@ var render = function() {
     "div",
     { staticClass: "container" },
     [
+      _c("b-alert", { attrs: { show: "" } }, [_vm._v(_vm._s(_vm.message))]),
+      _vm._v(" "),
       _c("b-table", { attrs: { striped: "", bordered: "", items: _vm.users } }),
       _vm._v(" "),
       _c(
-        "b-button",
-        {
-          on: {
-            click: function($event) {
-              return _vm.replay()
-            }
-          }
-        },
-        [_vm._v("Rejouer")]
+        "div",
+        { staticClass: "text-center" },
+        [
+          _c(
+            "b-button",
+            {
+              on: {
+                click: function($event) {
+                  return _vm.replay()
+                }
+              }
+            },
+            [_vm._v("Rejouer")]
+          )
+        ],
+        1
       )
     ],
     1

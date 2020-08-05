@@ -1,7 +1,9 @@
 <template>
     <div class="container">
-       <b-card
-            title="Veuillez renseigner votre nom de joueur avant de pouvoir jouer"
+        <b-alert show variant="danger" v-if="message !== ''">{{ message }}</b-alert>
+
+        <b-card
+            title="Veuillez renseigner votre nom de joueur avant de pouvoir jouer."
             tag="username"
             class="mb-2"
         >
@@ -31,6 +33,6 @@
                 this.$emit('register', usernameInput);
             }
         },
-        props: ['username']
+        props: ['username', 'message']
     };
 </script>
