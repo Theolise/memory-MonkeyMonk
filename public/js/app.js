@@ -1973,7 +1973,8 @@ function User(_ref) {
       user: {
         id: null,
         username: null,
-        score: null
+        score: null,
+        lastScore: null
       }
     };
   },
@@ -2001,6 +2002,10 @@ function User(_ref) {
                   vm.user.id = response.data.id;
                   vm.user.username = response.data.username;
                   vm.user.score = response.data.score;
+
+                  if (response.data.score !== null) {
+                    vm.user.lastScore = response.data.score;
+                  }
                 })["catch"](function (response) {
                   console.log(response);
                 });
@@ -2014,11 +2019,40 @@ function User(_ref) {
       }))();
     },
     updateScore: function updateScore(score) {
+      var _this2 = this;
+
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var vm, response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                vm = _this2;
+
+                if (!(vm.user.lastScore === null || vm.user.lastScore < score)) {
+                  _context2.next = 11;
+                  break;
+                }
+
+                _context2.next = 4;
+                return window.axios.put("/api/user/".concat(vm.user.id), {
+                  'score': score
+                });
+
+              case 4:
+                response = _context2.sent;
+                vm.user.id = response.data.id;
+                vm.user.username = response.data.username;
+                vm.user.score = response.data.score;
+
+                if (response.data.score !== null) {
+                  vm.user.lastScore = response.data.score;
+                }
+
+                _context2.next = 11;
+                break;
+
+              case 11:
               case "end":
                 return _context2.stop();
             }
@@ -2228,12 +2262,8 @@ __webpack_require__.r(__webpack_exports__);
       endGame: false
     };
   },
-  mounted: function mounted() {
-    console.log(this.cards);
-    debugger;
+  created: function created() {
     this.shuffle(this.cards);
-    console.log(this.cards);
-    debugger;
   },
   methods: {
     shuffle: function shuffle(array) {
@@ -2321,7 +2351,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (vm.numberPairsFound === 8) {
         vm.endGame = true;
-        this.$emit('updateScore', score);
+        this.$emit('updateScore', vm.score);
       }
     }
   },

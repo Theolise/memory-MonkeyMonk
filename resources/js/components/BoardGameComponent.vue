@@ -104,7 +104,7 @@
                 endGame: false
             }
         },
-        mounted: function () {
+        created: function () {
             this.shuffle(this.cards);
         },
         methods: {
@@ -198,7 +198,7 @@
 
                 if (vm.numberPairsFound === 8) {
                     vm.endGame = true;
-                    this.$emit('updateScore', score);
+                    this.$emit('updateScore', vm.score);
                 }
             }
         },

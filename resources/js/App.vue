@@ -40,7 +40,8 @@
         user: {
           id: null,
           username: null,
-          score: null
+          score: null,
+          lastScore: null
         }
       }
     },
@@ -58,16 +59,33 @@
           headers: {'Content-Type': 'multipart/form-data' }
           })
           .then(function (response) {
-              vm.user.id = response.data.id;
-              vm.user.username = response.data.username;
-              vm.user.score = response.data.score;
+            vm.user.id = response.data.id;
+            vm.user.username = response.data.username;
+            vm.user.score = response.data.score;
+
+            if(response.data.score !== null) {
+              vm.user.lastScore = response.data.score;
+            }
           })
           .catch(function (response) {
               console.log(response);
           });
       },
       async updateScore(score) {
-        
+        var vm = this;
+
+        if (vm.user.lastScore === null || vm.user.lastScore < score) {
+          let response = await window.axios.put(`/api/user/${vm.user.id}`, { 'score': score });
+          vm.user.id = response.data.id;
+          vm.user.username = response.data.username;
+          vm.user.score = response.data.score;
+
+          if(response.data.score !== null) {
+            vm.user.lastScore = response.data.score;
+          }
+        } else {
+          
+        }
       }
     },
     components: {
