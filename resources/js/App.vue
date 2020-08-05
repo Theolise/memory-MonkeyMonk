@@ -5,15 +5,22 @@
 </style>
 
 <template>
-  <div id="app" class="container">
+  <div id="app">
     <div>
       <h1 class="title">Memory</h1>
     </div>
 
     <register-component
+      v-if="!user.username && !user.id"
       v-bind:username="user.username"
       @register="register"
-    ></register-component>
+    >
+    </register-component>
+
+    <board-game-component
+      v-if="user.username && user.id"
+      @updateScore="updateScore"
+    ></board-game-component>
   </div>
 </template>
 
@@ -25,6 +32,7 @@
   }
 
   import RegisterComponent from './components/RegisterComponent.vue';
+  import BoardGameComponent from './components/BoardGameComponent.vue';
 
   export default {
     data() {
@@ -58,9 +66,13 @@
               console.log(response);
           });
       },
+      async updateScore(score) {
+        
+      }
     },
     components: {
-      RegisterComponent
+      RegisterComponent,
+      BoardGameComponent
     }
   }
 </script>
