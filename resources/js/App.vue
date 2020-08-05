@@ -1,6 +1,6 @@
 <style>
     .title {
-    text-align: center;
+      text-align: center;
     }
 </style>
 
@@ -11,16 +11,24 @@
     </div>
 
     <register-component
-      v-if="!user.username && !user.id"
+      v-if="!user.username && !user.id && !endGame"
       v-bind:username="user.username"
       @register="register"
     >
     </register-component>
 
     <board-game-component
-      v-if="user.username && user.id"
+      v-if="user.username && user.id && !endGame"
       @updateScore="updateScore"
-    ></board-game-component>
+    >
+    </board-game-component>
+
+    <user-ranking-component
+      v-if="endGame"
+      v-bind:users="users"
+      @replay="replay"
+    >
+    </user-ranking-component>
   </div>
 </template>
 
@@ -31,21 +39,31 @@
     this.score = score;
   }
 
-  import RegisterComponent from './components/RegisterComponent.vue';
-  import BoardGameComponent from './components/BoardGameComponent.vue';
-
-  export default {
-    data() {
-      return {
+  function getDefaultData() {
+    return {
         user: {
           id: null,
           username: null,
           score: null,
           lastScore: null
-        }
-      }
+        },
+        users: [],
+        endGame: false
+    }
+}
+
+  import BoardGameComponent from './components/BoardGameComponent.vue';
+  import RegisterComponent from './components/RegisterComponent.vue';
+  import UserRankingComponent from './components/UserRankingComponent.vue';
+
+  export default {
+    data: function() {
+      return getDefaultData();
     },
     methods: {
+      resetData: function () {
+        Object.assign(this.$data, getDefaultData());
+      },
       async register(username) {
         var bodyFormData = new FormData();
         bodyFormData.set('username', username);
@@ -74,7 +92,7 @@
       async updateScore(score) {
         var vm = this;
 
-        if (vm.user.lastScore === null || vm.user.lastScore < score) {
+        if (vm.user.lastScore === null || vm.user.lastScore > score) {
           let response = await window.axios.put(`/api/user/${vm.user.id}`, { 'score': score });
           vm.user.id = response.data.id;
           vm.user.username = response.data.username;
@@ -86,11 +104,25 @@
         } else {
           
         }
+
+        vm.showUserRanking();
+      },
+      async showUserRanking() {
+        var vm = this;
+
+        let response = await window.axios.get(`/api/users`);
+
+        vm.users = response.data;
+        vm.endGame = true;
+      },
+      replay() {
+        this.resetData()
       }
     },
     components: {
+      BoardGameComponent,
       RegisterComponent,
-      BoardGameComponent
+      UserRankingComponent
     }
   }
 </script>

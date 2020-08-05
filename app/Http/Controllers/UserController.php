@@ -30,7 +30,9 @@ class UserController extends Controller
 
     public function getUsers()
     {
-        return response(User::all()->jsonSerialize(), Response::HTTP_OK);
+        $users = User::select('username', 'score')->whereNotNull('score' )->orderBy('score')->get();
+
+        return response($users->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getUserByName()
