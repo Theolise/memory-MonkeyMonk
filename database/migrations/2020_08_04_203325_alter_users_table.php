@@ -20,7 +20,7 @@ class AlterUsersTable extends Migration
             $table->dropColumn('remember_token');
             $table->dropColumn('name');
             $table->string('username')->unique();
-            $table->integer('score');
+            $table->integer('score')->nullable();
         });
     }
 
@@ -33,6 +33,8 @@ class AlterUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('score');
+            $table->dropColumn('username');
+            $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

@@ -8,10 +8,15 @@ use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
-    public function createUser()
+    public function createUser(Request $request)
     {
+        $validatedData = $request->validate([
+            'username' => 'required'
+        ]);
+
         $user = new User();
-        $crud->save();
+        $user->username = $request->input('username');
+        $user->save();
 
         return response($user->jsonSerialize(), Response::HTTP_CREATED);
     }
