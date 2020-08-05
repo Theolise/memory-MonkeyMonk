@@ -6,7 +6,6 @@
 
 <template>
     <div class="container">
-       <h1 class="title my-4">Bienvenue</h1>
 
        <b-card
             title="Veuillez renseigner votre nom de joueur avant de pouvoir jouer"
