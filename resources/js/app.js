@@ -7,6 +7,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue);
 
+window.axios = require('axios');
+
 let app = new Vue({
     el: '#app',
 
