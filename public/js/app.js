@@ -2036,9 +2036,9 @@ function getDefaultData() {
                 }).then(function (response) {
                   vm.user.id = response.data.id;
                   vm.user.username = response.data.username;
-                  vm.user.score = response.data.score;
 
-                  if (response.data.score !== null) {
+                  if (response.data.score) {
+                    vm.user.score = response.data.score;
                     vm.user.lastScore = response.data.score;
                   }
                 })["catch"](function (response) {
